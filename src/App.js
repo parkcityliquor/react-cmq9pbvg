@@ -171,7 +171,7 @@ const SYSTEMS = {
 async function askClaude(agentId, q) {
   const res = await fetch("/api/claude",{
     method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:SYSTEMS[agentId],messages:[{role:"user",content:q}]})
+    body:JSON.stringify({model:"claude-sonnet-4-5",max_tokens:1000,system:SYSTEMS[agentId],messages:[{role:"user",content:q}]})
   });
   const d=await res.json();
   if(!res.ok) throw new Error(d?.error?.message||"API Error");
