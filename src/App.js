@@ -1,5 +1,19 @@
 import React, { useState, useRef } from "react";
+const SUPABASE_URL = "https://zvzevjnuznxqsdbhqnkb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_iwATytOrZtRaBcadfqAXOA_p1ijo...";
 
+async function fetchSalesData() {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/sales?select=*&limit=1000`,
+    {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`
+      }
+    }
+  );
+  return await res.json();
+}
 // ── SALES DATA ────────────────────────────────────────────────────────────────
 const SALES = [
   {sku:50761,name:"HENNESSY VS 375ml",dept:"Spirit",sold:126,qty:14,rev:2566,cost:126*11.47},
