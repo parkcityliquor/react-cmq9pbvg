@@ -104,10 +104,11 @@ function InvoiceView({invoices, loading, summary, invoiceSummary}) {
   const getStatus = (inv) => {
     const due = new Date(inv.due_date);
     const diff = Math.round((due - today) / 86400000);
-    if(inv.status === "paid") return {label:"PAID", color:"#34D399", days: null};
+    if(inv.status === "paid") return {label:"✅ PAID", color:"#34D399", days: null};
     if(diff < 0) return {label:`${Math.abs(diff)}d OVERDUE`, color:"#F87171", days: diff};
-    if(diff <= 7) return {label:`Due in ${diff}d`, color:"#FBBF24", days: diff};
-    return {label:`Due ${inv.due_date}`, color:"#94A3B8", days: diff};
+    if(diff <= 3) return {label:`⚠️ Due in ${diff}d`, color:"#F87171", days: diff};
+    if(diff <= 14) return {label:`Coming Due in ${diff}d`, color:"#FBBF24", days: diff};
+    return {label:`Due in ${diff}d`, color:"#94A3B8", days: diff};
   };
 
   const totalOwed    = invoices.filter(i=>i.status!=="paid").reduce((s,i)=>s+parseFloat(i.balance_due||0),0);
@@ -483,7 +484,7 @@ export default function App() {
   const negStock    = sales.filter(i=>i.qty<0).length;
   const today       = new Date();
   const totalOwed   = invoices.filter(i=>i.status!=="paid").reduce((s,i)=>s+parseFloat(i.balance_due||0),0);
-  const overdueCount = invoices.filter(i=>new Date(i.due_date)<today&&i.status!=="paid").length;
+  const overdueCount = invoices.filter(i=>{const d=new Date(i.due_date);return d<today&&i.status!=="paid";}).length;
 
   const summary = `Park City Liquor. ${DAYS_OPEN} days open since April 6, 2026. Revenue: $${totalRev.toFixed(0)}. Net Profit: $${netProfit.toFixed(0)}. Oversold SKUs: ${negStock}. Labor: ${totalHours}hrs @ $13/hr = $${laborCost.toFixed(0)}. Monthly fixed: $${TOTAL_MONTHLY_EXP}. Top sellers: ${[...sales].sort((a,b)=>b.rev-a.rev).slice(0,5).map(i=>`${i.name} $${i.rev.toFixed(0)}`).join(", ")}`;
 
